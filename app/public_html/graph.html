@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf8">
+	<script src="https://d3js.org/d3.v6.js"></script>
+	<title>Graph Test</title>
+	
+
+</head>
+
+<body>
+	<div>
+		<svg id="circle1">
+			<circle cx="40" cy="60"></circle>
+		</svg>
+		
+		<svg id="circle2">
+			<circle cx="100" cy="90"></circle>
+		</svg>
+		
+		<svg id="circle3">
+			<circle cx="245" cy="60"></circle>
+		</svg>
+	</div>
+
+<script>
+
+let popularity = [40, 70, 66];
+let circle = d3.selectAll("circle");
+let blanck = d3.select(circle.nodes()[0]);
+blanck.attr("r", popularity[0]);
+let gec = d3.select(circle.nodes()[1]).attr("r", popularity[1]);
+let fiona = d3.select(circle.nodes()[2]).attr("r", popularity[2]);
+circle.style("fill"< "steelblue");
+</script>
+</body>

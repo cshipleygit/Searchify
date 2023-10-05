@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Searchify</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div>
+	</div>
+    <div>
+        <a href="/"><h1 class="header">Searchify</h1></a>
+        <br>
+        <hr class="rounded">
+        <h3 class="sub-header">Let's see what we can find.</h3>
+        <br>
+        <input class = "search" type="text" placeholder="Search for an artist...">
+    </div>
+<script>
+    
+let counter = localStorage.getItem('counter');
+let selectedArtist = localStorage.getItem('selectedArtist');
+
+let qs = window.location.search;
+let urlParams = new URLSearchParams(qs);
+let access_token = urlParams.get('code');
+let refresh_token = urlParams.get('refresh_token');
+
+if(counter > 0){
+    console.log("made it into new conditional");
+    let fetchURL = '/search?artist=' + selectedArtist + '&code=' + access_token;
+    fetch(fetchURL).then(function (response) {
+        console.log(response.status);
+        if (response.status === 200){
+            return response.json();
+        }
+        else if (response.status === 500){
+            window.alert("Error! Reauthorization Needed.");
+            window.location.assign('/login');
+        }
+        else{
+            window.alert("Invalid entry! Please try again.");
+            window.location.assign('fetchURL');
+            console.log("error");
+        }
+    }).then(function (response) {
+        console.log(response);
+
+        // Local Storage -> used in results page
+        localStorage.setItem("artist", response[0].name);
+        localStorage.setItem("followers", response[0].followers);
+        localStorage.setItem("genre", response[0].genre);
+        localStorage.setItem("uri", response[0].uri);
+        localStorage.setItem("image", response[0].imageURL);
+        localStorage.setItem("popularity", response[0].popularity);
+        localStorage.setItem("rel_arr", JSON.stringify(response));
+        localStorage.setItem("code", access_token);
+
+        // Redirect
+        window.location.replace("http://localhost:3000/result.html");
+
+    }).catch(function (error) {
+        console.log(error);
+    });
+}
+
+if(access_token){
+    let search_field = document.querySelector("input");
+    search_field.addEventListener("keyup", function(event){
+        if (event.keyCode === 13) {
+        let search_value = search_field.value;
+        event.preventDefault();
+
+        console.log(search_value);        
+        let fetchURL = '/search?artist=' + search_value + '&code=' + access_token;
+        fetch(fetchURL).then(function (response) {
+            console.log(response.status);
+            if (response.status === 200){
+                return response.json();
+            } 
+			else if (response.status === 500){
+				window.alert("Error! Reauthorization Needed.");
+				window.location.assign('/login');
+			}
+            else{
+				window.alert("Invalid entry! Please try again.");
+				window.location.assign('fetchURL');
+                console.log("error");
+            }
+        }).then(function (response) {
+
+            // Local Storage -> used in results page
+            localStorage.setItem("artist", response[0].name);
+            localStorage.setItem("followers", response[0].followers);
+            localStorage.setItem("genre", response[0].genre);
+            localStorage.setItem("uri", response[0].uri);
+            localStorage.setItem("image", response[0].imageURL);
+			localStorage.setItem("popularity", response[0].popularity);
+			localStorage.setItem("rel_arr", JSON.stringify(response));
+            localStorage.setItem("code", access_token);
+
+            // Redirect
+            window.location.replace("http://localhost:3000/result.html");
+
+        }).catch(function (error) {
+            console.log(error);
+        });
+        }   
+    });
+} 
+</script>
+<footer>
+    S3M - CS375
+</footer>
+</body>
+</html>
